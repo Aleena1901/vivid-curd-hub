@@ -17,14 +17,17 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Check if Supabase credentials are available
 const hasSupabaseCredentials = !!(supabaseUrl && supabaseKey);
 
-if (!hasSupabaseCredentials) {
-  console.error('Missing Supabase credentials. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your Supabase project settings.');
-}
-
-// Create a mock client if credentials are missing, otherwise use real Supabase client
+// Create a Supabase client
 const supabase = hasSupabaseCredentials 
   ? createClient(supabaseUrl, supabaseKey)
   : null;
+
+// Log connection status
+if (hasSupabaseCredentials) {
+  console.log('Connected to Supabase');
+} else {
+  console.error('Missing Supabase credentials. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your Supabase project settings.');
+}
 
 // Sample data for when Supabase is not configured
 const mockItems: Item[] = [
@@ -63,17 +66,22 @@ export const itemService = {
       return mockItems;
     }
     
-    const { data, error } = await supabase
-      .from('items')
-      .select('*')
-      .order('createdAt', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('items')
+        .select('*')
+        .order('createdAt', { ascending: false });
+        
+      if (error) {
+        console.error('Error fetching items:', error);
+        return [];
+      }
       
-    if (error) {
-      console.error('Error fetching items:', error);
+      return data || [];
+    } catch (error) {
+      console.error('Unexpected error fetching items:', error);
       return [];
     }
-    
-    return data || [];
   },
   
   // Get a single item by id
@@ -83,18 +91,23 @@ export const itemService = {
       return mockItems.find(item => item.id === id);
     }
     
-    const { data, error } = await supabase
-      .from('items')
-      .select('*')
-      .eq('id', id)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('items')
+        .select('*')
+        .eq('id', id)
+        .single();
+        
+      if (error) {
+        console.error('Error fetching item:', error);
+        return undefined;
+      }
       
-    if (error) {
-      console.error('Error fetching item:', error);
+      return data;
+    } catch (error) {
+      console.error('Unexpected error fetching item:', error);
       return undefined;
     }
-    
-    return data;
   },
   
   // Create a new item
@@ -110,23 +123,28 @@ export const itemService = {
       return newItem;
     }
     
-    const newItem = {
-      ...item,
-      createdAt: new Date().toISOString(),
-    };
-    
-    const { data, error } = await supabase
-      .from('items')
-      .insert([newItem])
-      .select()
-      .single();
+    try {
+      const newItem = {
+        ...item,
+        createdAt: new Date().toISOString(),
+      };
       
-    if (error) {
-      console.error('Error creating item:', error);
+      const { data, error } = await supabase
+        .from('items')
+        .insert([newItem])
+        .select()
+        .single();
+        
+      if (error) {
+        console.error('Error creating item:', error);
+        throw new Error('Failed to create item');
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Unexpected error creating item:', error);
       throw new Error('Failed to create item');
     }
-    
-    return data;
   },
   
   // Update an existing item
@@ -141,19 +159,24 @@ export const itemService = {
       return undefined;
     }
     
-    const { data, error } = await supabase
-      .from('items')
-      .update(updatedItem)
-      .eq('id', id)
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('items')
+        .update(updatedItem)
+        .eq('id', id)
+        .select()
+        .single();
+        
+      if (error) {
+        console.error('Error updating item:', error);
+        return undefined;
+      }
       
-    if (error) {
-      console.error('Error updating item:', error);
+      return data;
+    } catch (error) {
+      console.error('Unexpected error updating item:', error);
       return undefined;
     }
-    
-    return data;
   },
   
   // Delete an item
@@ -168,16 +191,21 @@ export const itemService = {
       return false;
     }
     
-    const { error } = await supabase
-      .from('items')
-      .delete()
-      .eq('id', id);
+    try {
+      const { error } = await supabase
+        .from('items')
+        .delete()
+        .eq('id', id);
+        
+      if (error) {
+        console.error('Error deleting item:', error);
+        return false;
+      }
       
-    if (error) {
-      console.error('Error deleting item:', error);
+      return true;
+    } catch (error) {
+      console.error('Unexpected error deleting item:', error);
       return false;
     }
-    
-    return true;
   },
 };
