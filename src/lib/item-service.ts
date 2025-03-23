@@ -23,7 +23,7 @@ let items: Item[] = [
     name: "Modern Desk Lamp",
     description: "A beautiful desk lamp with adjustable brightness and color temperature. Designed for focus and comfort.",
     price: 129.99,
-    imageUrl: "https://images.unsplash.com/photo-1534073828943-f801091bb18e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
     createdAt: new Date(2023, 6, 22).toISOString(),
   },
   {
