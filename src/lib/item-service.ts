@@ -58,6 +58,7 @@ export const itemService = {
   // Get all items
   getItems: async (): Promise<Item[]> => {
     try {
+      console.log('Fetching items from Supabase');
       const { data, error } = await supabase
         .from('item') // Changed from 'items' to 'item'
         .select('*')
@@ -69,6 +70,7 @@ export const itemService = {
         return mockItems;
       }
       
+      console.log('Got items from Supabase:', data);
       // Map the data to our Item interface
       return data ? data.map(mapSupabaseItemToItem) : mockItems;
     } catch (error) {
@@ -81,6 +83,7 @@ export const itemService = {
   // Get a single item by id
   getItem: async (id: string): Promise<Item | undefined> => {
     try {
+      console.log('Fetching item from Supabase with id:', id);
       const { data, error } = await supabase
         .from('item') // Changed from 'items' to 'item'
         .select('*')
@@ -92,6 +95,7 @@ export const itemService = {
         return mockItems.find(item => item.id === id);
       }
       
+      console.log('Got item from Supabase:', data);
       return data ? mapSupabaseItemToItem(data) : undefined;
     } catch (error) {
       console.error('Unexpected error fetching item:', error);
@@ -111,6 +115,7 @@ export const itemService = {
         createAt: new Date().toISOString(), // Note the typo in DB column name
       };
       
+      console.log('Creating item in Supabase:', supabaseItem);
       const { data, error } = await supabase
         .from('item') // Changed from 'items' to 'item'
         .insert([supabaseItem])
@@ -128,6 +133,7 @@ export const itemService = {
         return mockItem;
       }
       
+      console.log('Item created in Supabase:', data);
       return mapSupabaseItemToItem(data);
     } catch (error) {
       console.error('Unexpected error creating item:', error);
@@ -151,6 +157,7 @@ export const itemService = {
       if (updatedItem.price !== undefined) supabaseItem.price = updatedItem.price;
       if (updatedItem.imageUrl !== undefined) supabaseItem.imageUrl = updatedItem.imageUrl;
       
+      console.log('Updating item in Supabase with id:', id, supabaseItem);
       const { data, error } = await supabase
         .from('item') // Changed from 'items' to 'item'
         .update(supabaseItem)
@@ -168,6 +175,7 @@ export const itemService = {
         return undefined;
       }
       
+      console.log('Item updated in Supabase:', data);
       return data ? mapSupabaseItemToItem(data) : undefined;
     } catch (error) {
       console.error('Unexpected error updating item:', error);
@@ -183,6 +191,7 @@ export const itemService = {
   // Delete an item
   deleteItem: async (id: string): Promise<boolean> => {
     try {
+      console.log('Deleting item from Supabase with id:', id);
       const { error } = await supabase
         .from('item') // Changed from 'items' to 'item'
         .delete()
@@ -198,6 +207,7 @@ export const itemService = {
         return false;
       }
       
+      console.log('Item deleted from Supabase');
       return true;
     } catch (error) {
       console.error('Unexpected error deleting item:', error);
