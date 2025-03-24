@@ -48,8 +48,8 @@ const mapSupabaseItemToItem = (supabaseItem: any): Item => {
     name: supabaseItem.name || '',
     description: supabaseItem.discription || '', // Note: there's a typo in the DB column name
     price: supabaseItem.price || 0,
-    imageUrl: supabaseItem.imageUrl || '',
-    createdAt: supabaseItem.createAt || new Date().toISOString(), // Note: typo in DB column name
+    imageUrl: supabaseItem.imageUrl || supabaseItem.imageurl || '', // Handle both cases
+    createdAt: supabaseItem.createAt || supabaseItem.createat || new Date().toISOString(), // Note: typo in DB column name
   };
 };
 
@@ -60,9 +60,9 @@ export const itemService = {
     try {
       console.log('Fetching items from Supabase');
       const { data, error } = await supabase
-        .from('item') // Changed from 'items' to 'item'
+        .from('item')
         .select('*')
-        .order('createAt', { ascending: false }); // Note the typo in column name
+        .order('createAt', { ascending: false });
         
       if (error) {
         console.error('Error fetching items:', error);
@@ -84,15 +84,24 @@ export const itemService = {
   getItem: async (id: string): Promise<Item | undefined> => {
     try {
       console.log('Fetching item from Supabase with id:', id);
+      
+      // Check if the ID is a simple number (from mock data)
+      const mockItem = mockItems.find(item => item.id === id);
+      if (/^[1-9]\d*$/.test(id)) {
+        console.log('Using mock data for numeric ID:', id);
+        return mockItem;
+      }
+      
+      // Try to fetch from Supabase
       const { data, error } = await supabase
-        .from('item') // Changed from 'items' to 'item'
+        .from('item')
         .select('*')
         .eq('id', id)
         .single();
         
       if (error) {
         console.error('Error fetching item:', error);
-        return mockItems.find(item => item.id === id);
+        return mockItem; // Fall back to mock item if available
       }
       
       console.log('Got item from Supabase:', data);

@@ -22,6 +22,10 @@ const ItemCard: React.FC<ItemCardProps> = ({ item }) => {
             alt={item.name}
             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
             loading="lazy"
+            onError={(e) => {
+              console.error("Image failed to load:", item.imageUrl);
+              (e.target as HTMLImageElement).src = "/placeholder.svg";
+            }}
             onLoad={(e) => {
               (e.target as HTMLElement).parentElement?.classList.add("bg-transparent");
               (e.target as HTMLElement).parentElement?.classList.remove("bg-black/5");

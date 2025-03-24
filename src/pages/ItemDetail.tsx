@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,6 +19,7 @@ const ItemDetail: React.FC = () => {
     queryKey: ["item", id],
     queryFn: () => itemService.getItem(id as string),
     enabled: !!id,
+    retry: 1,
   });
   
   const deleteMutation = useMutation({
@@ -85,11 +85,21 @@ const ItemDetail: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto animate-fade-in">
           <div className="glass-card overflow-hidden p-0 rounded-2xl aspect-square">
-            <img
-              src={item.imageUrl}
-              alt={item.name}
-              className="w-full h-full object-cover"
-            />
+            {item.imageUrl ? (
+              <img
+                src={item.imageUrl}
+                alt={item.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  console.error("Image failed to load:", item.imageUrl);
+                  (e.target as HTMLImageElement).src = "/placeholder.svg";
+                }}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-muted">
+                <span className="text-muted-foreground">No image available</span>
+              </div>
+            )}
           </div>
           
           <div className="flex flex-col">
