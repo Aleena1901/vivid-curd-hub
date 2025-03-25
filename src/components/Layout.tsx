@@ -2,6 +2,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
+import { useAuth } from "@/lib/auth-context";
+import { Button } from "@/components/ui/button";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,6 +11,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const { user, signOut } = useAuth();
   
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -36,8 +39,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </NavLink>
             </nav>
             
-            <div className="md:hidden">
-              {/* Mobile menu button would go here */}
+            <div className="flex items-center gap-2">
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground hidden md:inline">
+                    {user.email}
+                  </span>
+                  <Button variant="ghost" size="sm" onClick={() => signOut()}>
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="secondary" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

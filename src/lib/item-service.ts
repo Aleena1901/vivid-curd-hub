@@ -46,10 +46,10 @@ const mapSupabaseItemToItem = (supabaseItem: any): Item => {
   return {
     id: supabaseItem.id,
     name: supabaseItem.name || '',
-    description: supabaseItem.discription || '', // Note: there's a typo in the DB column name
+    description: supabaseItem.description || '', // Now using the correct column name
     price: supabaseItem.price || 0,
-    imageUrl: supabaseItem.imageUrl || supabaseItem.imageurl || '', // Handle both cases
-    createdAt: supabaseItem.createAt || supabaseItem.createat || new Date().toISOString(), // Note: typo in DB column name
+    imageUrl: supabaseItem.image_url || '', // Now using the correct column name
+    createdAt: supabaseItem.created_at || new Date().toISOString(), // Now using the correct column name
   };
 };
 
@@ -62,7 +62,7 @@ export const itemService = {
       const { data, error } = await supabase
         .from('item')
         .select('*')
-        .order('createAt', { ascending: false });
+        .order('created_at', { ascending: false }); // Now using the correct column name
         
       if (error) {
         console.error('Error fetching items:', error);
@@ -118,15 +118,14 @@ export const itemService = {
       // Convert our item to match Supabase column names
       const supabaseItem = {
         name: item.name,
-        discription: item.description, // Note the typo in DB column name
+        description: item.description, // Now using the correct column name
         price: item.price,
-        imageUrl: item.imageUrl,
-        createAt: new Date().toISOString(), // Note the typo in DB column name
+        image_url: item.imageUrl, // Now using the correct column name
       };
       
       console.log('Creating item in Supabase:', supabaseItem);
       const { data, error } = await supabase
-        .from('item') // Changed from 'items' to 'item'
+        .from('item')
         .insert([supabaseItem])
         .select()
         .single();
@@ -162,13 +161,13 @@ export const itemService = {
       // Convert our item to match Supabase column names
       const supabaseItem: any = {};
       if (updatedItem.name !== undefined) supabaseItem.name = updatedItem.name;
-      if (updatedItem.description !== undefined) supabaseItem.discription = updatedItem.description;
+      if (updatedItem.description !== undefined) supabaseItem.description = updatedItem.description; // Now using the correct column name
       if (updatedItem.price !== undefined) supabaseItem.price = updatedItem.price;
-      if (updatedItem.imageUrl !== undefined) supabaseItem.imageUrl = updatedItem.imageUrl;
+      if (updatedItem.imageUrl !== undefined) supabaseItem.image_url = updatedItem.imageUrl; // Now using the correct column name
       
       console.log('Updating item in Supabase with id:', id, supabaseItem);
       const { data, error } = await supabase
-        .from('item') // Changed from 'items' to 'item'
+        .from('item')
         .update(supabaseItem)
         .eq('id', id)
         .select()
@@ -202,7 +201,7 @@ export const itemService = {
     try {
       console.log('Deleting item from Supabase with id:', id);
       const { error } = await supabase
-        .from('item') // Changed from 'items' to 'item'
+        .from('item')
         .delete()
         .eq('id', id);
         

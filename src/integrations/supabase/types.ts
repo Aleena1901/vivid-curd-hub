@@ -11,26 +11,26 @@ export type Database = {
     Tables: {
       item: {
         Row: {
-          createat: string | null
-          discription: string | null
+          created_at: string | null
+          description: string | null
           id: string
-          imageurl: string | null
+          image_url: string | null
           name: string | null
           price: number | null
         }
         Insert: {
-          createat?: string | null
-          discription?: string | null
+          created_at?: string | null
+          description?: string | null
           id?: string
-          imageurl?: string | null
+          image_url?: string | null
           name?: string | null
           price?: number | null
         }
         Update: {
-          createat?: string | null
-          discription?: string | null
+          created_at?: string | null
+          description?: string | null
           id?: string
-          imageurl?: string | null
+          image_url?: string | null
           name?: string | null
           price?: number | null
         }
