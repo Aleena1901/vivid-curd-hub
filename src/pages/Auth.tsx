@@ -38,7 +38,7 @@ const Auth: React.FC = () => {
         toast.success("Successfully signed in!");
       } else {
         await signUp(values.email, values.password);
-        toast.success("Account created! You can now sign in.");
+        toast.success("Account created successfully! You can now sign in.");
         // Automatically switch to sign in tab after successful signup
         setAuthMode('signin');
       }

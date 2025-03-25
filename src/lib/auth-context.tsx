@@ -52,11 +52,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         throw error;
       }
-
-      toast.success('Check your email for the confirmation link');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to sign up');
       console.error('Error signing up:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -73,11 +72,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (error) {
         throw error;
       }
-
-      toast.success('Signed in successfully');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to sign in');
       console.error('Error signing in:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -96,6 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to sign out');
       console.error('Error signing out:', error);
+      throw error;
     } finally {
       setLoading(false);
     }
