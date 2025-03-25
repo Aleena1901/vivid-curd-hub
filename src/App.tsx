@@ -13,6 +13,7 @@ import NewItem from "./pages/NewItem";
 import EditItem from "./pages/EditItem";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -34,12 +35,47 @@ const App: React.FC = () => {
             <Sonner />
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/items" element={<Items />} />
-                <Route path="/items/new" element={<NewItem />} />
-                <Route path="/items/:id" element={<ItemDetail />} />
-                <Route path="/items/:id/edit" element={<EditItem />} />
+                <Route 
+                  path="/" 
+                  element={
+                    <ProtectedRoute>
+                      <Index />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/items" 
+                  element={
+                    <ProtectedRoute>
+                      <Items />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/items/new" 
+                  element={
+                    <ProtectedRoute>
+                      <NewItem />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/items/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <ItemDetail />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/items/:id/edit" 
+                  element={
+                    <ProtectedRoute>
+                      <EditItem />
+                    </ProtectedRoute>
+                  } 
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

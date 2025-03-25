@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
@@ -11,10 +11,20 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      navigate('/auth');
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
   };
 
   return (
@@ -45,7 +55,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <span className="text-sm text-muted-foreground hidden md:inline">
                     {user.email}
                   </span>
-                  <Button variant="ghost" size="sm" onClick={() => signOut()}>
+                  <Button variant="ghost" size="sm" onClick={handleSignOut}>
                     Sign Out
                   </Button>
                 </div>
