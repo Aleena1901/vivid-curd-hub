@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/lib/auth-context';
 import Layout from '@/components/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 
 const authSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -31,10 +32,19 @@ const Auth: React.FC = () => {
   });
 
   const onSubmit = async (values: AuthFormValues) => {
-    if (authMode === 'signin') {
-      await signIn(values.email, values.password);
-    } else {
-      await signUp(values.email, values.password);
+    try {
+      if (authMode === 'signin') {
+        await signIn(values.email, values.password);
+        toast.success("Successfully signed in!");
+      } else {
+        await signUp(values.email, values.password);
+        toast.success("Account created! You can now sign in.");
+        // Automatically switch to sign in tab after successful signup
+        setAuthMode('signin');
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      toast.error(error instanceof Error ? error.message : "Authentication failed");
     }
   };
 
