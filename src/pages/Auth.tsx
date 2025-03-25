@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,6 @@ type AuthFormValues = z.infer<typeof authSchema>;
 
 const Auth: React.FC = () => {
   const { user, loading, signIn, signUp } = useAuth();
-  const navigate = useNavigate();
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   
   const form = useForm<AuthFormValues>({
